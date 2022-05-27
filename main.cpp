@@ -7,6 +7,7 @@
 
 #include "Path.h"
 #include "Scanner.h"
+#include "Links.h"
 
 using namespace std;
 namespace fs = std::filesystem;
@@ -20,6 +21,7 @@ int main(int argc, char* argv[]) {
 
     //Declare variables
     ifstream inFile;
+    ofstream outFile;
     fs::path currentPath = fs::current_path();
     Path startFile(argv[1]);
 
@@ -44,11 +46,20 @@ int main(int argc, char* argv[]) {
     Scanner scanner(startFile.GetAbsolutePath());
     scanner.RunScan();
 
+    //Get strings from file
     vector<string> strings = scanner.GetStrings();
-    vector<string> ids = scanner.GetIds();
+    //vector<string> ids = scanner.GetIds();
+    
+    //Get links from strings
+    //vector<fs::path> links = FindLinks(strings, startFile.GetDirectory());
 
-    ofstream outFile;
+    fs::path testing = "/mnt/v/alumni3.byu.eduCopy/index.cfm";
 
+    cout << fs::exists(testing) << endl;
+    // cout << fs::is_directory(testing) << endl;
+
+
+    /*
     outFile.open("strings.txt");
     if (outFile.is_open()) {
         for (string str : strings) {
@@ -56,14 +67,8 @@ int main(int argc, char* argv[]) {
         }
     }
     outFile.close();
+    */
 
-    outFile.open("ids.txt");
-    if (outFile.is_open()) {
-        for (string str : ids) {
-            outFile << str << endl;
-        }
-    }
-    outFile.close();
     
 
 

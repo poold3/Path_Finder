@@ -22,6 +22,11 @@ class Path {
             return absolutePath;
         }
 
+        fs::path GetDirectory() {
+            fs::path temp = absolutePath;
+            return temp.remove_filename();
+        }
+
 		bool IsDirectory() {
             return isDirectory;
         }
