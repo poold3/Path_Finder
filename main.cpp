@@ -51,26 +51,9 @@ int main(int argc, char* argv[]) {
     //vector<string> ids = scanner.GetIds();
     
     //Get links from strings
-    //vector<fs::path> links = FindLinks(strings, startFile.GetDirectory());
+    vector<fs::path> links = FindLinks(strings, startFile.GetDirectory());
 
     fs::path testing = "/mnt/v/alumni3.byu.eduCopy/index.cfm";
-
-    cout << fs::exists(testing) << endl;
-    // cout << fs::is_directory(testing) << endl;
-
-
-    /*
-    outFile.open("strings.txt");
-    if (outFile.is_open()) {
-        for (string str : strings) {
-            outFile << str << endl;
-        }
-    }
-    outFile.close();
-    */
-
-    
-
 
 
     return 0;

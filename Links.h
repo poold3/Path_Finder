@@ -20,42 +20,77 @@ int FindDirectorySize(string inputLine) {
     return size;
 }
 
-bool CombinePaths(string str, fs::path currentPath) {
+bool CombinePaths(string str, fs::path currentPath, fs::path &newPath, vector<string> oldPathSegments) {
     //This function needs to combine the str path to the current path
     bool exists = false;
     string strCopy = str;
-    if (strCopy.at(0) == '/' || strCopy.at(0) == '\\') {
-        exists = fs::exists(strCopy);
+    if (strCopy.length() == 0) {
+        return false;
+    }
+    else if (strCopy.at(0) == '/' || strCopy.at(0) == '\\') {
+        fs::path root = "/mnt/v/alumni3.byu.eduCopy";
+        fs::path endPath = strCopy;
+        root += endPath;
+        exists = fs::exists(root);
+        newPath = root;
         return exists;
     }
     else if (strCopy.substr(0, 2) == "./" || strCopy.substr(0, 2) == ".\\") {
         strCopy = strCopy.substr(2);
         fs::path temp = strCopy;
-        fs::path temp2 = currentPath;
-        temp2 += temp;
-        exists = fs::exists(temp2);
+        fs::path newPath = currentPath;
+        newPath += temp;
+        exists = fs::exists(newPath);
         return exists;
     }
     else {
-        string newPath = "";
-        int size = 1;
-        for (int i = 0; i < (int)strCopy.length(); ++i) {
+        vector<string> newPathSegments;
+        int size;
+        //Get segments of new path
+        while (strCopy.length() > 0) {
             if (IsValidDirectoryCharacter(strCopy.at(0))) {
                 size = FindDirectorySize(strCopy);
-                newPath += strCopy.substr(0, size);
+                newPathSegments.push_back(strCopy.substr(0, size));
             }
-            if (strCopy.at(0) == '/' || strCopy.at(0) == '\\') {
-                newPath += "/";
+            else if (strCopy.at(0) == '/' || strCopy.at(0) == '\\') {
                 size = 1;
             }
             strCopy = strCopy.substr(size);
         }
+        
+        vector<string> finalSegments = oldPathSegments;
+        //Using the newPath segments, create the finalSegments
+        for (int i = 0; i < (int)newPathSegments.size(); ++i) {
+            if (newPathSegments.at(i) == "alumni3") {
+                newPathSegments.at(i) = "alumni3.byu.edu";
+            }
+            if (newPathSegments.at(i) == "..") {
+                finalSegments.pop_back();
+            }
+            else {
+                finalSegments.push_back(newPathSegments.at(i));
+            }
+        }
+
+        //Build newPath
+        string newString = "/";
+        for (int i = 0; i < (int)finalSegments.size(); ++i) {
+            newString += finalSegments.at(i);
+            if (i != (int)(finalSegments.size() - 1)) {
+                newString += "/";
+            }
+        }
+
+        exists = fs::exists(newString);
+        newPath = newString;
+        return exists;
+
     }
     
 }
 
 
-string FilterString (string str, fs::path currentPath) {
+string FilterString (string str) {
     //This function will look for additions (https, ?, etc.) to file paths that we need to remove
     //before we can map out the path
     if (str.length() <= 0) {
@@ -74,7 +109,7 @@ string FilterString (string str, fs::path currentPath) {
 
     bool changes = true;
 
-    while (changes == true && str.length() > 0 && CombinePaths(str, currentPath) == false) {
+    while (changes == true && str.length() > 0) {
         changes = false;
         size_t position = str.find("https://");
         if (position != string::npos && position == 0) {
@@ -91,9 +126,15 @@ string FilterString (string str, fs::path currentPath) {
             str.erase(position, 4);
             changes = true;
         }
-        position = str.find("url");
+        position = str.find("url(");
         if (position != string::npos) {
-            str.erase(position, 4);
+            str.erase(0, position + 4);
+            str.erase(str.length() - 1, 1);
+            changes = true;
+        }
+        position = str.find("?");
+        if (position != string::npos) {
+            str.erase(position, str.length() - position);
             changes = true;
         }
     }
@@ -104,17 +145,43 @@ string FilterString (string str, fs::path currentPath) {
 
 vector<fs::path> FindLinks(vector<string> strings, fs::path currentPath) {
     vector<fs::path> links;
+    vector<string> oldPathSegments;
+    string oldPath = currentPath.string();
+    
+    cout << oldPath << endl;
+    int size = 1;
+    while (oldPath.length() > 0) {
+        if (IsValidDirectoryCharacter(oldPath.at(0))) {
+            size = FindDirectorySize(oldPath);
+            oldPathSegments.push_back(oldPath.substr(0, size));
+        }
+        else if (oldPath.at(0) == '/' || oldPath.at(0) == '\\') {
+            size = 1;
+        }
+        oldPath = oldPath.substr(size);
+    }
+
+
+
+    int counter = 0;
     for (string str : strings) {
+        ++counter;
         fs::path testPath = currentPath;
         //"/mnt/v/alumni3.byu.eduCopy/index.cfm";
         //cout << fs::exists(testing) << endl;
         //cout << fs::is_directory(testing) << endl;
 
         //Send string to filtering station.
-        string filteredString = FilterString(str, currentPath);
+        string filteredString = FilterString(str);
+        fs::path newPath;
+        bool exists = CombinePaths(filteredString, currentPath, newPath, oldPathSegments);
+        if (exists) {
+            cout << counter << ": " << newPath << endl;
+        }
         
+    
     }
-
+    
 
 
     return links;
