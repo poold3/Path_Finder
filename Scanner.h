@@ -89,6 +89,10 @@ class Scanner {
                     }
                     
                 }
+                else if (inputLine.substr(0, 2) == "//") {
+                    //type = COMMENT;
+                    size = inputLine.length();
+                }
                 else {
                     size = 1;
                 }

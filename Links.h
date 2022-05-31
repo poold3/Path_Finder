@@ -24,46 +24,58 @@ bool CombinePaths(string str, fs::path currentPath, fs::path &newPath, vector<st
     //This function needs to combine the str path to the current path
     bool exists = false;
     string strCopy = str;
+
+    vector<string> newPathSegments;
+    int size;
+    //Get segments of new path
+    while (strCopy.length() > 0) {
+        if (IsValidDirectoryCharacter(strCopy.at(0))) {
+            size = FindDirectorySize(strCopy);
+            string newSegement = strCopy.substr(0, size);
+            if (newSegement == "alumni3.byu.edu") {
+                newSegement = "alumni3.byu.eduCopy";
+            }
+            if (newPathSegments.size() != 0 || (newSegement != "alumni3" && newSegement != "alumni3.byu.eduCopy")) {
+                newPathSegments.push_back(strCopy.substr(0, size));
+            }
+        }
+        else if (strCopy.at(0) == '/' || strCopy.at(0) == '\\') {
+            size = 1;
+        }
+        else {
+            return false;
+        }
+        strCopy = strCopy.substr(size);
+    }
+
+    strCopy = str;
     if (strCopy.length() == 0) {
         return false;
     }
     else if (strCopy.at(0) == '/' || strCopy.at(0) == '\\') {
-        fs::path root = "/mnt/v/alumni3.byu.eduCopy";
-        fs::path endPath = strCopy;
-        root += endPath;
-        exists = fs::exists(root);
-        newPath = root;
+        string newString = "/mnt/v/alumni3.byu.eduCopy/";
+        for (int i = 0; i < (int)newPathSegments.size(); ++i) {
+            newString += newPathSegments.at(i);
+            if (i != (int)(newPathSegments.size() - 1)) {
+                newString += "/";
+            }
+        }
+        exists = fs::exists(newString);
+        newPath = newString;
         return exists;
     }
     else if (strCopy.substr(0, 2) == "./" || strCopy.substr(0, 2) == ".\\") {
         strCopy = strCopy.substr(2);
         fs::path temp = strCopy;
-        fs::path newPath = currentPath;
+        newPath = currentPath;
         newPath += temp;
         exists = fs::exists(newPath);
         return exists;
     }
     else {
-        vector<string> newPathSegments;
-        int size;
-        //Get segments of new path
-        while (strCopy.length() > 0) {
-            if (IsValidDirectoryCharacter(strCopy.at(0))) {
-                size = FindDirectorySize(strCopy);
-                newPathSegments.push_back(strCopy.substr(0, size));
-            }
-            else if (strCopy.at(0) == '/' || strCopy.at(0) == '\\') {
-                size = 1;
-            }
-            strCopy = strCopy.substr(size);
-        }
-        
         vector<string> finalSegments = oldPathSegments;
         //Using the newPath segments, create the finalSegments
         for (int i = 0; i < (int)newPathSegments.size(); ++i) {
-            if (newPathSegments.at(i) == "alumni3") {
-                newPathSegments.at(i) = "alumni3.byu.edu";
-            }
             if (newPathSegments.at(i) == "..") {
                 finalSegments.pop_back();
             }
@@ -113,17 +125,19 @@ string FilterString (string str) {
         changes = false;
         size_t position = str.find("https://");
         if (position != string::npos && position == 0) {
-            str.erase(position, 8);
+            str.erase(position, 7);
             changes = true;
         }
         position = str.find("http://");
         if (position != string::npos && position == 0) {
-            str.erase(position, 7);
+            str.erase(position, 6);
             changes = true;
         }
         position = str.find("www.");
         if (position != string::npos && position == 0) {
             str.erase(position, 4);
+            string temp = "/";
+            str = temp + str;
             changes = true;
         }
         position = str.find("url(");
@@ -175,6 +189,7 @@ vector<fs::path> FindLinks(vector<string> strings, fs::path currentPath) {
         string filteredString = FilterString(str);
         fs::path newPath;
         bool exists = CombinePaths(filteredString, currentPath, newPath, oldPathSegments);
+
         if (exists) {
             cout << counter << ": " << newPath << endl;
         }

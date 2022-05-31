@@ -48,6 +48,14 @@ int main(int argc, char* argv[]) {
 
     //Get strings from file
     vector<string> strings = scanner.GetStrings();
+    outFile.open("strings.txt");
+    if (outFile.is_open()) {
+        for (string str : strings) {
+            outFile << str << endl;
+        }
+    }
+    outFile.close();
+    
     //vector<string> ids = scanner.GetIds();
     
     //Get links from strings

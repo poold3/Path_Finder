@@ -193,8 +193,6 @@
 "Rep_Grant_Student_Info"
 "ADR/files/Rep_Grant_Alternate_Info.xls"
 "Rep_Grant_Alternate_Info"
-'var'
-'let'
 "requestEmailLink"
 "/chapterreports/reports/events/index.cfm?year="
 "/template2018/footer.cfm"
