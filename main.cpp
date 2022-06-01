@@ -61,7 +61,7 @@ int main(int argc, char* argv[]) {
     //Get links from strings
     vector<fs::path> links = FindLinks(strings, startFile.GetDirectory());
 
-    fs::path testing = "/mnt/v/alumni3.byu.eduCopy/index.cfm";
+    //fs::path testing = "/mnt/v/alumni3.byu.eduCopy/index.cfm";
 
 
     return 0;
