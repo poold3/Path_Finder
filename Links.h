@@ -151,6 +151,14 @@ string FilterString (string str) {
             str.erase(position, str.length() - position);
             changes = true;
         }
+        position = str.find("#");
+        if (position != string::npos) {
+            size_t nextPosition = str.find("#", position + 1);
+            if (nextPosition != string::npos) {
+                str.erase(position, str.length() - position);
+                changes = true;
+            }
+        }
     }
     
 
@@ -162,7 +170,6 @@ vector<fs::path> FindLinks(vector<string> strings, fs::path currentPath) {
     vector<string> oldPathSegments;
     string oldPath = currentPath.string();
     
-    cout << oldPath << endl;
     int size = 1;
     while (oldPath.length() > 0) {
         if (IsValidDirectoryCharacter(oldPath.at(0))) {
@@ -179,21 +186,27 @@ vector<fs::path> FindLinks(vector<string> strings, fs::path currentPath) {
 
     int counter = 0;
     for (string str : strings) {
-        ++counter;
-        fs::path testPath = currentPath;
-        //"/mnt/v/alumni3.byu.eduCopy/index.cfm";
-        //cout << fs::exists(testing) << endl;
-        //cout << fs::is_directory(testing) << endl;
+        try {
+            ++counter;
+            fs::path testPath = currentPath;
+            //"/mnt/v/alumni3.byu.eduCopy/index.cfm";
+            //cout << fs::exists(testing) << endl;
+            //cout << fs::is_directory(testing) << endl;
 
-        //Send string to filtering station.
-        string filteredString = FilterString(str);
-        fs::path newPath;
-        bool exists = CombinePaths(filteredString, currentPath, newPath, oldPathSegments);
+            //Send string to filtering station.
+            string filteredString = FilterString(str);
+            fs::path newPath;
+            bool exists = CombinePaths(filteredString, currentPath, newPath, oldPathSegments);
 
-        if (exists) {
-            cout << counter << ": " << newPath << endl;
+            if (exists) {
+                cout << counter << ": " << newPath << endl;
+                links.push_back(newPath);
+            }
         }
         
+        catch(exception& e) {
+            cout << endl << e.what() << endl << endl;
+        }
     
     }
     

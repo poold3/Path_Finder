@@ -73,9 +73,11 @@ class Scanner {
                             strings.push_back(value);
                         }
                         catch (exception& e) {
-                            stringstream error;
-                            error << "No end to string on line " << line << ".";
-                            ThrowError(error.str());
+                            //stringstream error;
+                            cout << "No end to string on line " << line << ".";
+                            //error << "No end to string on line " << line << ".";
+                            //ThrowError(error.str());
+                            size = inputLine.length();
                         }
                     }
                     else if (isalpha(inputLine.at(0))) {

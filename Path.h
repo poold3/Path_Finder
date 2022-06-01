@@ -31,11 +31,14 @@ class Path {
             return isDirectory;
         }
 
+        string GetExtension() {
+            return absolutePath.extension();
+        }
+
         void AddPathToMap() {
             if (isDirectory) {
                 fs::path addPath = startAddPath;
                 addPath += absolutePath;
-                cout << addPath << endl;
                 fs::create_directories(addPath);
             }
             else {

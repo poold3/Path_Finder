@@ -8,6 +8,7 @@
 #include "Path.h"
 #include "Scanner.h"
 #include "Links.h"
+#include "Process.h"
 
 using namespace std;
 namespace fs = std::filesystem;
@@ -43,26 +44,8 @@ int main(int argc, char* argv[]) {
     startFile.AddPathToMap();
 
     //Send startFile to Scanner
-    Scanner scanner(startFile.GetAbsolutePath());
-    scanner.RunScan();
+    ReadFromFile(startFile);
 
-    //Get strings from file
-    vector<string> strings = scanner.GetStrings();
-    outFile.open("strings.txt");
-    if (outFile.is_open()) {
-        for (string str : strings) {
-            outFile << str << endl;
-        }
-    }
-    outFile.close();
-    
-    //vector<string> ids = scanner.GetIds();
-    
-    //Get links from strings
-    vector<fs::path> links = FindLinks(strings, startFile.GetDirectory());
-
-    //fs::path testing = "/mnt/v/alumni3.byu.eduCopy/index.cfm";
-
-
+    cout << "\n\nPath-Finder Mapping Complete!" << endl;
     return 0;
 }
