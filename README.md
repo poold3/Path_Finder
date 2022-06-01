@@ -1,2 +1,2 @@
 # Path_Finder
-Find all paths branching out from a single file.
+Use this program to map out all files stemming from once source file.
