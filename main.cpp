@@ -47,5 +47,7 @@ int main(int argc, char* argv[]) {
     ReadFromFile(startFile);
 
     cout << "\n\nPath-Finder Mapping Complete!" << endl;
+    cout << filesVisited.size() << " files read!" << endl;
+    cout << pathsMade.size() << " paths/files made!" << endl;
     return 0;
 }

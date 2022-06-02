@@ -10,9 +10,11 @@ using namespace std;
 namespace fs = std::filesystem;
 
 set<fs::path> filesVisited;
+set<fs::path> pathsMade;
 
 void AddToMap (vector<Path> Paths) {
     for (Path pa : Paths) {
+        pathsMade.insert(pa.GetAbsolutePath());
         pa.AddPathToMap();
     }
 
@@ -62,6 +64,57 @@ void ReadFromFile(Path file) {
             string extension = pa.GetExtension();
             if (extension == ".cfm" || extension == ".cfc" || extension == ".js" || extension == ".css") {
                 ReadFromFile(pa);
+            }
+        }
+        else {
+            //Code to look for an index file in this directory
+            fs::path absPath = pa.GetAbsolutePath();
+            string tempString = absPath.string();
+            if (tempString.at(tempString.length() - 1) == '.') {
+                tempString.erase(tempString.length() - 1, 1);
+                absPath = tempString;
+            }
+            if (tempString.at(tempString.length() - 1) == '/' || tempString.at(tempString.length() - 1) == '\\') {
+                absPath += "index";
+            }
+            else {
+                absPath += "/index";
+            }
+
+            fs::path temp = absPath;
+            temp += ".cfm";
+            if (fs::exists(temp)) {
+                Path tempPath(temp);
+                pathsMade.insert(tempPath.GetAbsolutePath());
+                tempPath.AddPathToMap();
+                ReadFromFile(tempPath);
+            }
+
+            temp = absPath;
+            temp += ".cfc";
+            if (fs::exists(temp)) {
+                Path tempPath(temp);
+                pathsMade.insert(tempPath.GetAbsolutePath());
+                tempPath.AddPathToMap();
+                ReadFromFile(tempPath);
+            }
+
+            temp = absPath;
+            temp += ".js";
+            if (fs::exists(temp)) {
+                Path tempPath(temp);
+                pathsMade.insert(tempPath.GetAbsolutePath());
+                tempPath.AddPathToMap();
+                ReadFromFile(tempPath);
+            }
+
+            temp = absPath;
+            temp += ".css";
+            if (fs::exists(temp)) {
+                Path tempPath(temp);
+                pathsMade.insert(tempPath.GetAbsolutePath());
+                tempPath.AddPathToMap();
+                ReadFromFile(tempPath);
             }
         }
     }
