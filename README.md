@@ -6,6 +6,10 @@ To begin, the app will read through the code of the file passed as a command lin
 ```
 ./a.out /mnt/c/Documents/Project/index.html
 ```
+If you would like to continue building on the Map directory that was generated from a previous run, use `-c` in the command line argument.
+```
+./a.out -c /mnt/c/Documents/Project/index.html
+```
 All strings found within that file are processed and run through a function to determine if any of the strings consist of a valid path within a directory.
 Each valid path is added to a temporary directory called `Map` within the Path_Finder directory.
 Additionally, all files found whose extension match one of the extensions set in the beginning of `Process.h` will each be read and searched for more paths.
