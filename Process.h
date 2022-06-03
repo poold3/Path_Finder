@@ -1,7 +1,7 @@
 #ifndef PROCESS_H
 #define PROCESS_H
 
-#include <set>
+
 #include "Path.h"
 #include "Scanner.h"
 #include "Links.h"
