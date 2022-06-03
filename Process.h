@@ -10,7 +10,7 @@ using namespace std;
 namespace fs = std::filesystem;
 
 //Set file extensions from which to read.
-set<string> EXTENSIONSTOREAD({".js", ".css", ".htm", ".html"});
+set<string> EXTENSIONSTOREAD({".cfm", ".cfc", ".js", ".css", ".htm", ".html"});
 
 //Set default file name to search for within all directories
 string DEFAULTFILENAME = "index";
@@ -30,8 +30,8 @@ void AddToMap (vector<Path> Paths) {
 void ReadFromFile(Path file) {
     ofstream outFile;
     ifstream inFile;
-
     if (filesVisited.find(file.GetAbsolutePath()) != filesVisited.end()) {
+        
         return;
     }
 
