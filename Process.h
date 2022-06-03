@@ -9,6 +9,9 @@
 using namespace std;
 namespace fs = std::filesystem;
 
+//Set file extensions from which to read.
+set<string> EXTENSIONSTOREAD({".js", ".css", ".htm", ".html"});
+
 set<fs::path> filesVisited;
 set<fs::path> pathsMade;
 
@@ -31,7 +34,7 @@ void ReadFromFile(Path file) {
 
     filesVisited.insert(file.GetAbsolutePath());
 
-    cout << "READING FROM " << file.GetAbsolutePath() << endl;
+    cout << "\nREADING FROM " << file.GetAbsolutePath() << endl;
 
     Scanner scanner(file.GetAbsolutePath());
     scanner.RunScan();
@@ -62,7 +65,7 @@ void ReadFromFile(Path file) {
     for (Path pa : newPaths) {
         if (!pa.IsDirectory()) {
             string extension = pa.GetExtension();
-            if (extension == ".cfm" || extension == ".cfc" || extension == ".js" || extension == ".css") {
+            if (EXTENSIONSTOREAD.find(extension) != EXTENSIONSTOREAD.end()) {
                 ReadFromFile(pa);
             }
         }
@@ -80,41 +83,16 @@ void ReadFromFile(Path file) {
             else {
                 absPath += "/index";
             }
-
-            fs::path temp = absPath;
-            temp += ".cfm";
-            if (fs::exists(temp)) {
-                Path tempPath(temp);
-                pathsMade.insert(tempPath.GetAbsolutePath());
-                tempPath.AddPathToMap();
-                ReadFromFile(tempPath);
-            }
-
-            temp = absPath;
-            temp += ".cfc";
-            if (fs::exists(temp)) {
-                Path tempPath(temp);
-                pathsMade.insert(tempPath.GetAbsolutePath());
-                tempPath.AddPathToMap();
-                ReadFromFile(tempPath);
-            }
-
-            temp = absPath;
-            temp += ".js";
-            if (fs::exists(temp)) {
-                Path tempPath(temp);
-                pathsMade.insert(tempPath.GetAbsolutePath());
-                tempPath.AddPathToMap();
-                ReadFromFile(tempPath);
-            }
-
-            temp = absPath;
-            temp += ".css";
-            if (fs::exists(temp)) {
-                Path tempPath(temp);
-                pathsMade.insert(tempPath.GetAbsolutePath());
-                tempPath.AddPathToMap();
-                ReadFromFile(tempPath);
+            for (string extension : EXTENSIONSTOREAD) {
+                fs::path temp = absPath;
+                temp += extension;
+                if (fs::exists(temp)) {
+                    Path tempPath(temp);
+                    pathsMade.insert(tempPath.GetAbsolutePath());
+                    tempPath.AddPathToMap();
+                    ReadFromFile(tempPath);
+                    break;
+                }
             }
         }
     }

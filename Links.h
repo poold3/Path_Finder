@@ -189,9 +189,6 @@ vector<fs::path> FindLinks(vector<string> strings, fs::path currentPath) {
         try {
             ++counter;
             fs::path testPath = currentPath;
-            //"/mnt/v/alumni3.byu.eduCopy/index.cfm";
-            //cout << fs::exists(testing) << endl;
-            //cout << fs::is_directory(testing) << endl;
 
             //Send string to filtering station.
             string filteredString = FilterString(str);
@@ -199,7 +196,7 @@ vector<fs::path> FindLinks(vector<string> strings, fs::path currentPath) {
             bool exists = CombinePaths(filteredString, currentPath, newPath, oldPathSegments);
 
             if (exists) {
-                cout << counter << ": " << newPath << endl;
+                cout << "\t" << counter << ": " << newPath << endl;
                 links.push_back(newPath);
             }
         }

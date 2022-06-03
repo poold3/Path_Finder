@@ -51,7 +51,6 @@ class Scanner {
     }
 
     void RunScan() {
-        cout << inputFile << endl;
         ifstream inFile;
         string inputLine;
         inFile.open(inputFile);
@@ -74,7 +73,7 @@ class Scanner {
                         }
                         catch (exception& e) {
                             //stringstream error;
-                            cout << "No end to string on line " << line << ".";
+                            cout << "No end to string on line " << line << "." << endl;
                             //error << "No end to string on line " << line << ".";
                             //ThrowError(error.str());
                             size = inputLine.length();
