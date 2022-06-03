@@ -12,6 +12,9 @@ namespace fs = std::filesystem;
 //Set file extensions from which to read.
 set<string> EXTENSIONSTOREAD({".js", ".css", ".htm", ".html"});
 
+//Set default file name to search for within all directories
+string DEFAULTFILENAME = "index";
+
 set<fs::path> filesVisited;
 set<fs::path> pathsMade;
 
@@ -78,10 +81,11 @@ void ReadFromFile(Path file) {
                 absPath = tempString;
             }
             if (tempString.at(tempString.length() - 1) == '/' || tempString.at(tempString.length() - 1) == '\\') {
-                absPath += "index";
+                absPath += DEFAULTFILENAME;
             }
             else {
-                absPath += "/index";
+                string defaultWithSlash = "/" + DEFAULTFILENAME;
+                absPath += defaultWithSlash;
             }
             for (string extension : EXTENSIONSTOREAD) {
                 fs::path temp = absPath;
